@@ -1,0 +1,48 @@
+# The real experiment. FineWeb-Edu has long coherent documents, so
+# middle-context forgetting actually shows up and PFCM means something.
+#
+#   python scripts/prepare_data.py --dataset fineweb_edu --docs 25000
+#
+# Thousands of iterations, not hundreds. ~2-3 h on an A100 at these settings.
+
+run_name: coft-gpt2-fineweb
+out_dir: runs
+seed: 1337
+
+model_type: gpt2
+dropout: 0.1
+
+dataset: fineweb_edu
+data_root: data
+
+t_infer: 512
+delta_init: 128
+delta_step: 64
+delta_min: 0
+delta_max: 512              # T + delta_max = 1024, the full GPT-2 window
+delta_tolerance: 0.01       # small dead zone: ignore step-to-step PFCM noise
+
+use_overextension: true
+use_prgg: true
+use_crs: true
+prgg_alpha: 2.0
+prgg_mode: per_position
+prgg_normalize: false
+crs_lambda: 0.5
+
+batch_size: 4               # delta_max 512 means blocks up to 1024: halve the batch
+grad_accum: 8               # effective batch 32, unchanged
+max_iters: 4000
+eval_interval: 200
+eval_iters: 40
+
+learning_rate: 3.0e-5
+min_lr: 3.0e-6
+warmup_iters: 100
+weight_decay: 0.1
+grad_clip: 1.0
+
+device: cuda
+dtype: auto
+log_interval: 50
+save_checkpoint: true

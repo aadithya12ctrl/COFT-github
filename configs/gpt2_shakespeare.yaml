@@ -1,0 +1,48 @@
+# Sanity check: does COFT run end to end on a real pretrained GPT-2?
+#
+# Tiny Shakespeare is short and repetitive, so the PFCM signal is weak and
+# noisy -- this config is for confirming the mechanics (PFCM, delta scheduling,
+# PRGG gating, CRS injection) work, not for drawing conclusions.
+# ~5 min on an A100.
+
+run_name: coft-gpt2-shakespeare
+out_dir: runs
+seed: 1337
+
+model_type: gpt2            # 124M pretrained
+dropout: 0.1
+
+dataset: shakespeare        # GPT-2 BPE, not shakespeare_char
+data_root: data
+
+t_infer: 512                # T: evaluation / inference length
+delta_init: 128
+delta_step: 64
+delta_min: 0
+delta_max: 256              # T + delta_max = 768 <= 1024 position embeddings
+delta_tolerance: 0.0
+
+use_overextension: true
+use_prgg: true
+use_crs: true
+prgg_alpha: 2.0
+prgg_mode: per_position
+prgg_normalize: false
+crs_lambda: 0.5
+
+batch_size: 8               # CRS materialises (B, nh, T, T) tensors: no flash fusion
+grad_accum: 4               # effective batch 32
+max_iters: 300
+eval_interval: 25
+eval_iters: 20
+
+learning_rate: 3.0e-5       # fine-tuning, not from-scratch training
+min_lr: 3.0e-6
+warmup_iters: 20
+weight_decay: 0.1
+grad_clip: 1.0
+
+device: cuda
+dtype: auto
+log_interval: 10
+save_checkpoint: true

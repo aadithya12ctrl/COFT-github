@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coft"
+version = "0.1.0"
+description = "Context Overextension Fine-Tuning: train long, infer short, to mitigate middle-context forgetting"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["llm", "gpt-2", "long-context", "lost-in-the-middle", "fine-tuning", "nanogpt"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch>=2.1",
+    "numpy>=1.24",
+    "tiktoken>=0.5",
+    "transformers>=4.35",
+    "PyYAML>=6.0",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+plots = ["matplotlib>=3.7"]
+data = ["datasets>=2.14", "tqdm>=4.66"]
+dev = ["pytest>=7.4", "ruff>=0.1"]
+
+[tool.setuptools]
+packages = ["coft"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+# the notebook is the paper artefact: kept verbatim, not reformatted
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E741"]  # l / L are the layer indices from the paper's notation

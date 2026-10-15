@@ -1,0 +1,39 @@
+# Tiny CPU run for wiring checks only -- a few iterations of a real GPT-2 on
+# CPU. Not a training recipe; the numbers are meaningless.
+#
+#   python scripts/train_coft.py --config configs/cpu_smoke.yaml
+
+run_name: coft-cpu-smoke
+out_dir: runs
+seed: 0
+
+model_type: gpt2
+dropout: 0.0
+
+dataset: shakespeare
+data_root: data
+
+t_infer: 64
+delta_init: 16
+delta_step: 8
+delta_min: 0
+delta_max: 32
+
+use_overextension: true
+use_prgg: true
+use_crs: true
+
+batch_size: 1
+grad_accum: 1
+max_iters: 4
+eval_interval: 2
+eval_iters: 2
+
+learning_rate: 1.0e-5
+min_lr: 1.0e-6
+warmup_iters: 1
+
+device: cpu
+dtype: float32
+log_interval: 1
+save_checkpoint: false

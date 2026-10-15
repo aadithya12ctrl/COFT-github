@@ -1,0 +1,45 @@
+# gpt2-medium (350M) on FineWeb-Edu. Same recipe, smaller micro-batch.
+# Needs ~35 GB at these settings: a 40 GB A100 fits it, a 16 GB T4 does not.
+
+run_name: coft-gpt2-medium-fineweb
+out_dir: runs
+seed: 1337
+
+model_type: gpt2-medium
+dropout: 0.1
+
+dataset: fineweb_edu
+data_root: data
+
+t_infer: 384                # shorter T to keep the O(T^2) CRS tensors affordable
+delta_init: 96
+delta_step: 48
+delta_min: 0
+delta_max: 384
+delta_tolerance: 0.01
+
+use_overextension: true
+use_prgg: true
+use_crs: true
+prgg_alpha: 2.0
+prgg_mode: per_position
+prgg_normalize: false
+crs_lambda: 0.5
+crs_layers: null            # e.g. [12, 13, ..., 23] to patch only the deeper half
+
+batch_size: 2
+grad_accum: 16
+max_iters: 4000
+eval_interval: 200
+eval_iters: 40
+
+learning_rate: 2.0e-5
+min_lr: 2.0e-6
+warmup_iters: 100
+weight_decay: 0.1
+grad_clip: 1.0
+
+device: cuda
+dtype: auto
+log_interval: 50
+save_checkpoint: true

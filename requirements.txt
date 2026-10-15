@@ -1,0 +1,12 @@
+# Core
+torch>=2.1            # needs torch.amp.GradScaler / autocast and bf16 support
+numpy>=1.24
+tiktoken>=0.5         # GPT-2 BPE
+transformers>=4.35    # only used by nanoGPT's GPT.from_pretrained
+PyYAML>=6.0           # config files
+requests>=2.31        # dataset download
+
+# Optional
+datasets>=2.14        # FineWeb-Edu streaming (scripts/prepare_data.py --dataset fineweb_edu)
+matplotlib>=3.7       # coft.plotting
+tqdm>=4.66
